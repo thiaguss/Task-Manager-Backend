@@ -18,3 +18,23 @@ export const createTask = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+export const deletedTask = async (req, res) => {
+  try {
+    const taskId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(taskId)) {
+      return res.status(400).json({ error: "Invalid task ID" });
+    }
+
+    const deletedTask = await TaskModel.findByIdAndDelete(taskId);
+
+    if (!deletedTask) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    res.status(200).json({ message: "Deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
