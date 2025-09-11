@@ -1,5 +1,5 @@
 import app from "./src/app.js";
-import connectToDatabase from "./src/config/database.js";
+import connectToDatabase from "./src/database/mongoose.database.js";
 
 const PORT = process.env.PORT || 3000;
 
