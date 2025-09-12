@@ -9,6 +9,22 @@ export const getTasks = async (req, res) => {
   }
 };
 
+export const getTaskById = async (req, res) => {
+  try {
+    const taskId = req.params.id;
+
+    const task = await TaskModel.findById(taskId);
+
+    if (!task) {
+      return res.status(404).json({ error: "This task was not found." });
+    }
+
+    res.status(200).json(task);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 export const createTask = async (req, res) => {
   try {
     const newTask = new TaskModel(req.body);
