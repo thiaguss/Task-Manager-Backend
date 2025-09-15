@@ -5,12 +5,24 @@ export const getAllTasks = async () => {
 };
 
 export const getTaskById = async (id) => {
-  return await TaskModel.findById(id);
+  const task = await TaskModel.findById(id);
+  if (!task) {
+    const error = new Error("Task not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return task;
 };
 
 export const createTask = async (data) => {
-  const newTask = new TaskModel(data);
-  return await newTask.save();
+  try {
+    const newTask = new TaskModel(data);
+    return await newTask.save();
+  } catch (err) {
+    const error = new Error("Failed to create task");
+    error.statusCode = 400;
+    throw error;
+  }
 };
 
 export const updateTask = async (id, updates) => {
@@ -22,15 +34,31 @@ export const updateTask = async (id, updates) => {
   );
 
   if (!isValidOperation) {
-    throw new Error("One or more fields are not editable.");
+    const error = new Error("One or more fields are not editable");
+    error.statusCode = 400;
+    throw error;
   }
 
-  return await TaskModel.findByIdAndUpdate(id, updates, {
+  const task = await TaskModel.findByIdAndUpdate(id, updates, {
     new: true,
     runValidators: true,
   });
+
+  if (!task) {
+    const error = new Error("Task not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return task;
 };
 
 export const deleteTask = async (id) => {
-  return await TaskModel.findByIdAndDelete(id);
+  const deletedTask = await TaskModel.findByIdAndDelete(id);
+  if (!deletedTask) {
+    const error = new Error("Task not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  return deletedTask;
 };
