@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import * as taskService from "../services/task.service.js";
+import * as taskService from "../service/taskService.js";
 
 class TaskController {
   constructor(service) {
