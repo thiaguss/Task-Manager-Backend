@@ -35,6 +35,31 @@ export const createTask = async (req, res) => {
   }
 };
 
+export const updatedTask = async (req, res) => {
+  try {
+    const taskId = req.params.id;
+
+    const taskToUpdate = await TaskModel.findById(taskId);
+
+    const allowedUpdates = ["isCompleted"];
+    const requestedUpdates = Object.keys(req.body);
+
+    for (update of requestedUpdates) {
+      if (allowedUpdates.includes(update)) {
+        taskToUpdate[update] = req.body[update]
+      } else {
+        res.status(500).json("One or more inserted fields are not editable.")
+      }
+    }
+
+    await taskToUpdate.save();
+
+    res.status(200).json(taskToUpdate);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 export const deletedTask = async (req, res) => {
   try {
     const taskId = req.params.id;
